@@ -1,0 +1,73 @@
+---
+title: "pencil"
+author: "امیرعلی سطوتی"
+date: "2025-06-04"
+output:
+  html_document:
+    css: "mystyle1.css"      # استفاده از فایل CSS سفارشی
+    toc: true                # اضافه کردن فهرست مطالب
+    toc_float: true          # فهرست شناور
+    #number_sections: true    # شماره‌گذاری سرفصل‌ها
+    highlight: "zenburn"     # تم رنگی کد
+    theme: "flatly"          # تم Bootstrap زیبا
+editor_options:
+  chunk_output_type: console  # تنظیم خروجی قطعه‌های کد
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, digits = 2)
+
+# تنظیم نحوه نمایش خروجی‌های عددی درون‌خطی (inline)
+knitr::knit_hooks$set(inline = function(x) {
+  if (is.numeric(x)) round(x, 2) else x
+})
+```
+# فراخوانی داده‌ها
+```{r}
+library(car)
+library(DescTools)
+```
+
+# سوال 1
+آیا میانگین درازای کاسبرگ (Sepal.Length) در سه نوع گل یکسان است؟
+```{r}
+summary(aov(Sepal.Length ~ Species, data = iris))
+```
+چون مقدار p کوچک است، فرض صفر رد می‌شود؛ پس میانگین درازای کاسبرگ در سه گونه متفاوت است.
+
+# سوال 2
+آیا میانگین درازای کاسبرگ در setosa و virginica یکسان است؟
+```{r}
+data2 <- subset(iris, Species %in% c("setosa", "virginica"))
+t.test(Sepal.Length ~ Species, data = data2)
+```
+چون مقدار p کوچک است، فرض صفر رد می‌شود؛ میانگین در دو گونه تفاوت معنی‌دار دارد.
+
+# سوال 3
+آیا میانگین پهنای گلبرگ (Petal.Width) در سه گونه یکسان است؟
+```{r}
+summary(aov(Petal.Width ~ Species, data = iris))
+```
+مقدار p کوچک است؛ پس میانگین پهنای گلبرگ در سه گونه تفاوت معنی‌داری دارد.
+
+# سوال 4
+آیا واریانس درازای کاسبرگ در setosa و versicolor یکسان است؟
+```{r}
+data3 <- subset(iris, Species %in% c("setosa", "versicolor"))
+var.test(Sepal.Length ~ Species, data = data3)
+```
+چون p < 0.05، فرض صفر رد می‌شود؛ واریانس در دو گونه متفاوت است.
+
+# سوال 5
+آیا واریانس درازای کاسبرگ در سه جامعه یکسان است؟
+```{r}
+leveneTest(Sepal.Length ~ Species, data = iris, center = mean)
+```
+مقدار p کوچک است؛ پس واریانس‌ها در سه گونه برابر نیستند.
+
+# سوال 6
+آیا واریانس پهنای گلبرگ (Petal.Width) در سه جامعه یکسان است؟
+```{r}
+leveneTest(Petal.Width ~ Species, data = iris, center = mean)
+```
+نتیجه: واریانس پهنای گلبرگ در سه گونه‌ی گل زنبق یکسان نیست.
